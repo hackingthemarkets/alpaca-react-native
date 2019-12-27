@@ -13,10 +13,6 @@ class DashboardScreen extends React.Component {
         headerTintColor: '#ffffff',
           headerStyle: {
             backgroundColor: '#2F95D6',
-            /*
-            borderBottomColor: '#ffffff',
-            borderBottomWidth: 3,
-            */
           },
           headerTitleStyle: {
             fontSize: 18,
@@ -45,10 +41,10 @@ class DashboardScreen extends React.Component {
         indices.map((symbol) => {
             polygon.getQuote(symbol).then((response) => {
                 console.log(response)
-                //console.log(response.data.last.price)
                 const newState = {}
-                //newState[symbol] = response.data.last.price
-                //this.setState(newState)
+
+                newState[symbol] = response.data.ticker.lastTrade.p.toFixed(2)
+                this.setState(newState)
             })
         })
 
@@ -89,7 +85,7 @@ class DashboardScreen extends React.Component {
                     <Text style={dashboardStyle.rowPriceCell}>{item.current_price}</Text>
                     <View style={dashboardStyle.rowChangeCell}>
                         <Ionicons name="md-arrow-dropup" size={32} color="green" />
-                        <Text style={dashboardStyle.rowChangePercent}>{parseFloat(item.unrealized_plpc).toFixed(2)}%</Text>
+                        <Text style={dashboardStyle.rowChangePercent}>{parseFloat(item.change_today * 100).toFixed(2)}%</Text>
                     </View>
 
                 </View>
@@ -131,8 +127,10 @@ class DashboardScreen extends React.Component {
                 </View>
             </View>
 
+
+            <Text style={dashboardStyle.heading}>Market</Text>
+
             <View style={{flex: 3}}>
-                <Text style={dashboardStyle.heading}>Market</Text>
 
                 <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                     <View style={[dashboardStyle.scoreboardItem, dashboardStyle.up]}>
@@ -142,7 +140,7 @@ class DashboardScreen extends React.Component {
                     </View>
                     <View style={[dashboardStyle.scoreboardItem, dashboardStyle.up]}>
                         <Text style={dashboardStyle.scoreboardText}>SPY</Text>
-                        <Ionicons name="md-arrow-dropdown" size={32} color="white" />
+                        <Ionicons name="md-arrow-dropup" size={32} color="white" />
                         <Text style={dashboardStyle.scoreboardText}>{this.state.SPY}</Text>
                     </View>
                     <View style={[dashboardStyle.scoreboardItem, dashboardStyle.up]}>
@@ -158,9 +156,10 @@ class DashboardScreen extends React.Component {
                 </View>
             </View>
 
+
             <View style={{flex: 6}}>
                 <Text key={'positions'} style={dashboardStyle.heading}>Positions</Text>
-    
+
                 <FlatList key={'list'} style={dashboardStyle.positions}
                     data={this.state.positions}
                     renderItem={this.renderRow} 
